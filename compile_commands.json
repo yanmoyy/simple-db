@@ -1,0 +1,18 @@
+[
+  {
+    "file": "src/temp.c",
+    "arguments": [
+      "gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-Iinclude",
+      "-c",
+      "src/temp.c",
+      "-o",
+      "build/temp.o"
+    ],
+    "directory": "/Users/yanmo/workspace/github.com/yanmoyy/simple-db",
+    "output": "build/temp.o"
+  }
+]
