@@ -1,4 +1,5 @@
-#include "db.h"
+#include "repl.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,6 +27,10 @@ void repl(InputBuffer *input_buffer)
     switch (prepare_statement(input_buffer, &statement)) {
     case PREPARE_SUCCESS:
         break;
+    case PREPARE_SYNTAX_ERROR:
+        printf("Syntax error at start of '%s'.\n", input_buffer->buffer);
+        return;
+
     case PREPARE_UNRECOGNIZED_STATEMENT:
         printf("Unrecognized keyword at start of '%s'.\n",
             input_buffer->buffer);
@@ -49,6 +54,16 @@ PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement)
 {
     if (strncmp(input_buffer->buffer, "insert", 6) == 0) {
         statement->type = STATEMENT_INSERT;
+        int args_assigned = sscanf(
+            input_buffer->buffer, "insert %d %s %s",
+            &(statement->row_to_insert.id),
+            statement->row_to_insert.username,
+            statement->row_to_insert.email);
+
+        if (args_assigned != 3) {
+            return PREPARE_SYNTAX_ERROR;
+        }
+
         return PREPARE_SUCCESS;
     }
     if (strcmp(input_buffer->buffer, "select") == 0) {

@@ -1,22 +1,8 @@
-#ifndef DB_H
-#define DB_H
+#ifndef REPL_H
+#define REPL_H
 
 #include "input_buffer.h"
-
-#define COLUMN_USERNAME_SIZE 32
-#define COLUMN_EMAIL_SIZE 255
-#define PAGE_SIZE 4096
-#define TABLE_MAX_PAGES 400
-
-typedef enum {
-    NODE_INTERNAL,
-    NODE_LEAF,
-} NodeType;
-
-typedef enum {
-    EXECUTE_SUCCESS,
-    EXECUTE_DUPLICATE_KEY,
-} ExecuteResult;
+#include "row.h"
 
 typedef enum {
     META_COMMAND_SUCCESS,
@@ -24,22 +10,28 @@ typedef enum {
 } MetaCommandResult;
 
 typedef enum {
-    PREPARE_SUCCESS,
-    PREPARE_UNRECOGNIZED_STATEMENT,
-} PrepareResult;
+    EXECUTE_SUCCESS,
+    EXECUTE_DUPLICATE_KEY,
+} ExecuteResult;
 
 typedef enum {
     STATEMENT_INSERT,
     STATEMENT_SELECT,
 } StatementType;
 
+typedef enum {
+    PREPARE_SUCCESS,
+    PREPARE_UNRECOGNIZED_STATEMENT,
+    PREPARE_SYNTAX_ERROR,
+} PrepareResult;
+
 typedef struct {
     StatementType type;
+    Row row_to_insert; // Only used for insert statement
 } Statement;
 
-/* Public functions */
-void print_prompt();
 void repl(InputBuffer *input_buffer);
+void print_prompt();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer);
 PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement);
 void execute_statement(Statement *statement);

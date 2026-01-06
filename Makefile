@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -g -Iinclude # -g for debugging, -Iinclude for headers
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:src/%.c=build/%.o)
-TARGET = build/mydb
+TARGET = bin/mydb
 
 $(shell mkdir -p build)
 
@@ -14,7 +14,7 @@ build/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf build/*
+	rm -rf build/* $(TARGET)
 
 run: $(TARGET)
 	./$(TARGET)
