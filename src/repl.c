@@ -6,20 +6,18 @@
 
 void print_prompt() { printf("db > "); }
 
-void repl(InputBuffer *input_buffer)
+void repl(InputBuffer *input_buffer, Table *table)
 {
     print_prompt();
     read_input(input_buffer);
 
-    if (strcmp(input_buffer->buffer, ".exit") == 0) {
-        if (input_buffer->buffer[0] == '.') {
-            switch (do_meta_command(input_buffer)) {
-            case META_COMMAND_SUCCESS:
-                return;
-            case META_COMMAND_UNRECOGNIZED_COMMAND:
-                printf("Unrecognized command\n");
-                return;
-            }
+    if (input_buffer->buffer[0] == '.') {
+        switch (do_meta_command(input_buffer)) {
+        case META_COMMAND_SUCCESS:
+            return;
+        case META_COMMAND_UNRECOGNIZED_COMMAND:
+            printf("Unrecognized command\n");
+            return;
         }
     }
 
@@ -27,8 +25,9 @@ void repl(InputBuffer *input_buffer)
     switch (prepare_statement(input_buffer, &statement)) {
     case PREPARE_SUCCESS:
         break;
+
     case PREPARE_SYNTAX_ERROR:
-        printf("Syntax error at start of '%s'.\n", input_buffer->buffer);
+        printf("Syntax error. Could not parse statement.\n");
         return;
 
     case PREPARE_UNRECOGNIZED_STATEMENT:
@@ -37,8 +36,17 @@ void repl(InputBuffer *input_buffer)
         return;
     }
 
-    execute_statement(&statement);
-    printf("Executed.\n");
+    switch (execute_statement(&statement, table)) {
+    case EXECUTE_SUCCESS:
+        printf("Executed.\n");
+        return;
+    case EXECUTE_TABLE_FULL:
+        printf("Error: Table is full.\n");
+        return;
+    case EXECUTE_UNRECOGNIZED_STATEMENT:
+        printf("Unrecognized statement.\n");
+        return;
+    }
 }
 
 MetaCommandResult do_meta_command(InputBuffer *input_buffer)
@@ -74,14 +82,39 @@ PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement)
     return PREPARE_UNRECOGNIZED_STATEMENT;
 }
 
-void execute_statement(Statement *statement)
+ExecuteResult execute_statement(Statement *statement, Table *table)
 {
     switch (statement->type) {
     case STATEMENT_INSERT:
-        printf("This is where we would do an insert.\n");
-        break;
+        return execute_insert(statement, table);
     case STATEMENT_SELECT:
-        printf("This is where we would do a select.\n");
-        break;
+        return execute_select(statement, table);
     }
+    return EXECUTE_UNRECOGNIZED_STATEMENT;
+}
+
+ExecuteResult execute_insert(Statement *statement, Table *table)
+{
+    if (table->num_rows >= TABLE_MAX_ROWS) {
+        return EXECUTE_TABLE_FULL;
+    }
+
+    Row *row_to_insert = &(statement->row_to_insert);
+
+    serialize_row(row_to_insert, row_slot(table, table->num_rows));
+    table->num_rows++;
+
+    return EXECUTE_SUCCESS;
+}
+
+ExecuteResult execute_select(Statement *statement, Table *table)
+{
+    (void)statement;
+
+    Row row;
+    for (uint32_t i = 0; i < table->num_rows; i++) {
+        deserialize_row(row_slot(table, i), &row);
+        print_row(&row);
+    }
+    return EXECUTE_SUCCESS;
 }

@@ -6,6 +6,7 @@ OBJ = $(SRC:src/%.c=build/%.o)
 TARGET = bin/mydb
 
 $(shell mkdir -p build)
+$(shell mkdir -p bin)
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^

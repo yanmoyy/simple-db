@@ -3,21 +3,17 @@
 
 #include "input_buffer.h"
 #include "row.h"
-
-typedef enum {
-    META_COMMAND_SUCCESS,
-    META_COMMAND_UNRECOGNIZED_COMMAND,
-} MetaCommandResult;
-
-typedef enum {
-    EXECUTE_SUCCESS,
-    EXECUTE_DUPLICATE_KEY,
-} ExecuteResult;
+#include "table.h"
 
 typedef enum {
     STATEMENT_INSERT,
     STATEMENT_SELECT,
 } StatementType;
+
+typedef struct {
+    StatementType type;
+    Row row_to_insert; // Only used for insert statement
+} Statement;
 
 typedef enum {
     PREPARE_SUCCESS,
@@ -25,15 +21,26 @@ typedef enum {
     PREPARE_SYNTAX_ERROR,
 } PrepareResult;
 
-typedef struct {
-    StatementType type;
-    Row row_to_insert; // Only used for insert statement
-} Statement;
+typedef enum {
+    EXECUTE_SUCCESS,
+    EXECUTE_TABLE_FULL,
+    EXECUTE_UNRECOGNIZED_STATEMENT,
+} ExecuteResult;
 
-void repl(InputBuffer *input_buffer);
+typedef enum {
+    META_COMMAND_SUCCESS,
+    META_COMMAND_UNRECOGNIZED_COMMAND,
+} MetaCommandResult;
+
+extern const uint32_t TABLE_MAX_ROWS;
+
+void repl(InputBuffer *input_buffer, Table *table);
 void print_prompt();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer);
 PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement);
-void execute_statement(Statement *statement);
+
+ExecuteResult execute_statement(Statement *statement, Table *table);
+ExecuteResult execute_insert(Statement *statement, Table *table);
+ExecuteResult execute_select(Statement *statement, Table *table);
 
 #endif
