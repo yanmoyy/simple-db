@@ -15,10 +15,12 @@ typedef struct {
     Row row_to_insert; // Only used for insert statement
 } Statement;
 
-typedef enum {
+typedef enum PrepareResult_t {
     PREPARE_SUCCESS,
-    PREPARE_UNRECOGNIZED_STATEMENT,
+    PREPARE_NEGATIVE_ID,
+    PREPARE_STRING_TOO_LONG,
     PREPARE_SYNTAX_ERROR,
+    PREPARE_UNRECOGNIZED_STATEMENT,
 } PrepareResult;
 
 typedef enum {

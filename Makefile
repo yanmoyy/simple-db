@@ -20,8 +20,11 @@ clean:
 run: $(TARGET)
 	./$(TARGET)
 
+test: $(TARGET)
+	bundle exec rspec -fd
+
 bear: 
 	make clean
 	bear -- make
 
-.PHONY: clean run bear
+.PHONY: clean run bear test

@@ -1,6 +1,6 @@
 [
   {
-    "file": "src/temp.c",
+    "file": "src/input_buffer.c",
     "arguments": [
       "gcc",
       "-Wall",
@@ -8,11 +8,76 @@
       "-g",
       "-Iinclude",
       "-c",
-      "src/temp.c",
+      "src/input_buffer.c",
       "-o",
-      "build/temp.o"
+      "build/input_buffer.o"
     ],
     "directory": "/Users/yanmo/workspace/github.com/yanmoyy/simple-db",
-    "output": "build/temp.o"
+    "output": "build/input_buffer.o"
+  },
+  {
+    "file": "src/main.c",
+    "arguments": [
+      "gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-Iinclude",
+      "-c",
+      "src/main.c",
+      "-o",
+      "build/main.o"
+    ],
+    "directory": "/Users/yanmo/workspace/github.com/yanmoyy/simple-db",
+    "output": "build/main.o"
+  },
+  {
+    "file": "src/repl.c",
+    "arguments": [
+      "gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-Iinclude",
+      "-c",
+      "src/repl.c",
+      "-o",
+      "build/repl.o"
+    ],
+    "directory": "/Users/yanmo/workspace/github.com/yanmoyy/simple-db",
+    "output": "build/repl.o"
+  },
+  {
+    "file": "src/row.c",
+    "arguments": [
+      "gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-Iinclude",
+      "-c",
+      "src/row.c",
+      "-o",
+      "build/row.o"
+    ],
+    "directory": "/Users/yanmo/workspace/github.com/yanmoyy/simple-db",
+    "output": "build/row.o"
+  },
+  {
+    "file": "src/table.c",
+    "arguments": [
+      "gcc",
+      "-Wall",
+      "-Wextra",
+      "-g",
+      "-Iinclude",
+      "-c",
+      "src/table.c",
+      "-o",
+      "build/table.o"
+    ],
+    "directory": "/Users/yanmo/workspace/github.com/yanmoyy/simple-db",
+    "output": "build/table.o"
   }
 ]
+
