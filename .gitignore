@@ -2,3 +2,4 @@ build/
 bin/
 .cache/
 .ruby-lsp/
+simple.db

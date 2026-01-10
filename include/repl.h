@@ -38,7 +38,7 @@ extern const uint32_t TABLE_MAX_ROWS;
 
 void repl(InputBuffer *input_buffer, Table *table);
 void print_prompt();
-MetaCommandResult do_meta_command(InputBuffer *input_buffer);
+MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);
 PrepareResult prepare_statement(InputBuffer *input_buffer, Statement *statement);
 
 ExecuteResult execute_statement(Statement *statement, Table *table);

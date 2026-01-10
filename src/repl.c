@@ -12,7 +12,7 @@ void repl(InputBuffer *input_buffer, Table *table)
     read_input(input_buffer);
 
     if (input_buffer->buffer[0] == '.') {
-        switch (do_meta_command(input_buffer)) {
+        switch (do_meta_command(input_buffer, table)) {
         case META_COMMAND_SUCCESS:
             return;
         case META_COMMAND_UNRECOGNIZED_COMMAND:
@@ -56,9 +56,10 @@ void repl(InputBuffer *input_buffer, Table *table)
     }
 }
 
-MetaCommandResult do_meta_command(InputBuffer *input_buffer)
+MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table)
 {
     if (strcmp(input_buffer->buffer, ".exit") == 0) {
+        db_close(table);
         exit(EXIT_SUCCESS);
     } else {
         return META_COMMAND_UNRECOGNIZED_COMMAND;

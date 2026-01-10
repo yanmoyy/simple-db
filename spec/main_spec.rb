@@ -1,7 +1,12 @@
 describe "database" do
+  let(:db_path) { "simple.db" }
+  before do
+    `rm -rf #{db_path}`
+  end
+
   def run_script(commands)
     raw_output = nil
-    IO.popen("./bin/mydb", "r+") do |pipe|
+    IO.popen("./bin/mydb #{db_path}", "r+") do |pipe|
       commands.each do |command|
         pipe.puts(command)
       end
@@ -65,33 +70,73 @@ describe "database" do
     )
   end
 
-  it 'prints error message if strings are too long' do
+  it "prints error message if strings are too long" do
     long_username = "a" * 33
     long_email = "a" * 256
     script = [
       "insert 1 #{long_username} #{long_email}",
       "select",
-      ".exit",
+      ".exit"
     ]
     result = run_script(script)
-    expect(result).to match_array([
-      "db > String is too long.",
-      "db > Executed.",
-      "db > ",
-    ])
+    expect(result).to(
+      match_array(
+        [
+          "db > String is too long.",
+          "db > Executed.",
+          "db > "
+        ]
+      )
+    )
   end
 
-  it 'prints an error message if id is negative' do
+  it "prints an error message if id is negative" do
     script = [
       "insert -1 cstack foo@bar.com",
-      "select", 
-      ".exit",
+      "select",
+      ".exit"
     ]
     result = run_script(script)
-    expect(result).to match_array([
-      "db > ID must be positive.", 
-      "db > Executed.",
-      "db > ",
-    ])
+    expect(result).to(
+      match_array(
+        [
+          "db > ID must be positive.",
+          "db > Executed.",
+          "db > "
+        ]
+      )
+    )
+  end
+
+  it "keeps data after closing connection" do
+    result1 = run_script(
+      [
+        "insert 1 user1 person1@example.com",
+        ".exit"
+      ]
+    )
+    expect(result1).to(
+      match_array(
+        [
+          "db > Executed.",
+          "db > "
+        ]
+      )
+    )
+    result2 = run_script(
+      [
+        "select",
+        ".exit"
+      ]
+    )
+    expect(result2).to(
+      match_array(
+        [
+          "db > (1, user1, person1@example.com)",
+          "Executed.",
+          "db > "
+        ]
+      )
+    )
   end
 end
