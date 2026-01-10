@@ -4,11 +4,9 @@
 #include "pager.h"
 #include <stdint.h>
 
-typedef struct table Table;
-
 typedef struct table {
-    uint32_t num_rows;
     Pager *pager;
+    uint32_t root_page_num;
 } Table;
 
 Table *db_open(const char *filename);

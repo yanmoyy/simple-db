@@ -1,3 +1,4 @@
+#include "btree.h"
 #include "cursor.h"
 #include "repl.h"
 #include "row.h"
@@ -65,6 +66,14 @@ MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table)
     if (strcmp(input_buffer->buffer, ".exit") == 0) {
         db_close(table);
         exit(EXIT_SUCCESS);
+    } else if (strcmp(input_buffer->buffer, ".btree") == 0) {
+        printf("Tree:\n");
+        print_leaf_node(get_page(table->pager, 0));
+        return META_COMMAND_SUCCESS;
+    } else if (strcmp(input_buffer->buffer, ".constants") == 0) {
+        printf("Constants:\n");
+        print_constants();
+        return META_COMMAND_SUCCESS;
     } else {
         return META_COMMAND_UNRECOGNIZED_COMMAND;
     }
@@ -131,15 +140,17 @@ ExecuteResult execute_statement(Statement *statement, Table *table)
 
 ExecuteResult execute_insert(Statement *statement, Table *table)
 {
-    if (table->num_rows >= TABLE_MAX_ROWS) {
+    extern const uint32_t LEAF_NODE_MAX_CELLS;
+
+    void *node = get_page(table->pager, table->root_page_num);
+    if ((*leaf_node_num_cells(node) >= LEAF_NODE_MAX_CELLS)) {
         return EXECUTE_TABLE_FULL;
     }
 
     Row *row_to_insert = &(statement->row_to_insert);
     Cursor *cursor = table_end(table);
 
-    serialize_row(row_to_insert, cursor_value(cursor));
-    table->num_rows++;
+    leaf_node_insert(cursor, row_to_insert->id, row_to_insert);
 
     return EXECUTE_SUCCESS;
 }
