@@ -3,8 +3,6 @@
 #include <stdint.h>
 
 #define TABLE_MAX_PAGES 100
-extern const uint32_t PAGE_SIZE;
-extern const uint32_t ROWS_PER_PAGE;
 
 typedef struct {
     int file_descriptor;

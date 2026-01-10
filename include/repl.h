@@ -34,8 +34,6 @@ typedef enum {
     META_COMMAND_UNRECOGNIZED_COMMAND,
 } MetaCommandResult;
 
-extern const uint32_t TABLE_MAX_ROWS;
-
 void repl(InputBuffer *input_buffer, Table *table);
 void print_prompt();
 MetaCommandResult do_meta_command(InputBuffer *input_buffer, Table *table);

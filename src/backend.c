@@ -10,6 +10,8 @@
 #include <unistd.h>
 
 extern const uint32_t ROW_SIZE;
+extern const uint32_t PAGE_SIZE;
+extern const uint32_t ROWS_PER_PAGE;
 
 Table *db_open(const char *filename)
 {

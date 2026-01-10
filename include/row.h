@@ -1,7 +1,6 @@
 #ifndef ROW_H
 #define ROW_H
 
-#include "table.h"
 #include <stdint.h>
 
 #define COLUMN_USERNAME_SIZE 32
@@ -19,6 +18,5 @@ void serialize_row(Row *source, void *destination);
 void deserialize_row(void *source, Row *destination);
 
 void print_row(Row *row);
-void *row_slot(Table *table, uint32_t row_num);
 
 #endif
