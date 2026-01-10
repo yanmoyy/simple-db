@@ -12,7 +12,13 @@ typedef struct {
 } Cursor;
 
 Cursor *table_start(Table *table);
-Cursor *table_end(Table *table);
+
+/*
+Return the position of given key.
+If the key is not present, return the position
+where it should be inserted.
+*/
+Cursor *table_find(Table *table, uint32_t key);
 void *cursor_value(Cursor *cursor);
 void cursor_advance(Cursor *cursor);
 
