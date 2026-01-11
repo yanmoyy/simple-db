@@ -24,6 +24,7 @@ Table *db_open(const char *filename)
         // New database file. Initialize page 0 as leaf node.
         void *root_node = get_page(pager, 0);
         initialize_leaf_node(root_node);
+        set_node_root(root_node, true);
     }
 
     return table;
@@ -147,4 +148,9 @@ void pager_flush(Pager *pager, uint32_t page_num)
         printf("Error writing: %d\n", errno);
         exit(EXIT_FAILURE);
     }
+}
+
+uint32_t get_unused_page_num(Pager *pager)
+{
+    return pager->num_pages;
 }

@@ -21,6 +21,11 @@ Cursor *table_start(Table *table)
     return cursor;
 }
 
+/*
+Return the position of given key.
+If the key is not present, return the position
+where it should be inserted.
+*/
 Cursor *table_find(Table *table, uint32_t key)
 {
     uint32_t root_page_num = table->root_page_num;
