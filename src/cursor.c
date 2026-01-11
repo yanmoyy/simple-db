@@ -1,21 +1,16 @@
 #include "cursor.h"
 #include "btree.h"
 #include "pager.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 extern const uint32_t ROW_SIZE;
 extern const uint32_t ROWS_PER_PAGE;
 
 Cursor *table_start(Table *table)
 {
-    Cursor *cursor = malloc(sizeof(Cursor));
-    cursor->table = table;
-    cursor->page_num = table->root_page_num;
-    cursor->cell_num = 0;
+    Cursor *cursor = table_find(table, 0);
 
-    void *root_node = get_page(table->pager, table->root_page_num);
-    uint32_t num_cells = *leaf_node_num_cells(root_node);
+    void *node = get_page(table->pager, cursor->page_num);
+    uint32_t num_cells = *leaf_node_num_cells(node);
     cursor->end_of_table = (num_cells == 0);
 
     return cursor;
@@ -52,6 +47,13 @@ void cursor_advance(Cursor *cursor)
 
     cursor->cell_num += 1;
     if (cursor->cell_num >= (*leaf_node_num_cells(node))) {
-        cursor->end_of_table = true;
+        /* Advance to next leaf node */
+        uint32_t next_page_num = *leaf_node_next_leaf(node);
+        if (next_page_num == 0) {
+            cursor->end_of_table = true;
+        } else {
+            cursor->page_num = next_page_num;
+            cursor->cell_num = 0;
+        }
     }
 }

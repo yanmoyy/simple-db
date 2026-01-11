@@ -14,6 +14,7 @@ uint32_t *leaf_node_num_cells(void *node);
 void *leaf_node_cell(void *node, uint32_t cell_num);
 uint32_t *leaf_node_key(void *node, uint32_t cell_num);
 void *leaf_node_value(void *node, uint32_t cell_num);
+uint32_t *leaf_node_next_leaf(void *node);
 
 /* getters (internal)*/
 uint32_t *internal_node_num_keys(void *node);
